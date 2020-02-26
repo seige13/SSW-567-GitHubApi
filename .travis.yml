@@ -6,4 +6,4 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
- - python -m unittest HW04ChrisBoffaTests
+ - python -m unittest hw04_chris_boffa_tests
