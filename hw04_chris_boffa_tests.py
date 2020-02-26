@@ -1,8 +1,15 @@
-import mock
-import unittest
+"""
+HW 04 Chris Boffa tests
+"""
 import json
+import unittest
 from unittest.mock import patch, call
-from HW04ChrisBoffa import user_github_activity, pretty_print_repo_info, get_user_repos, get_user_commits_for_repos
+import mock
+from hw04_chris_boffa import \
+    user_github_activity, \
+    pretty_print_repo_info, \
+    get_user_repos, \
+    get_user_commits_for_repos
 
 
 def _mock_response(
@@ -30,11 +37,18 @@ def _mock_response(
 
 
 class GithubApi(unittest.TestCase):
+    """
+    Github api test class
+    """
     mocked_single_repo = [{"name": "test_repo"}]
     mocked_multiple_repos = [{"name": "test_repo"}, {"name": "test_repo2"}]
 
     @patch('builtins.print')
     def test_print_user_repo_info(self, mocked_print):
+        """
+        :param mocked_print:
+        :return:
+        """
         pretty_print_repo_info(1, 1)
         self.assertEqual(mocked_print.mock_calls, [call('Repo: 1 Number of commits: 1')])
 
@@ -61,26 +75,29 @@ class GithubApi(unittest.TestCase):
     @mock.patch('requests.get')
     def test_get_user_commits_for_repos(self, mock_get):
         """user_commits_for_repos"""
-        mock_response = [{
-            "sha": "6d7e1fdd7a242711c26a134c5f6a10c99bee46d4",
-            "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2YTEwYzk5YmVlNDZkNA==",
-            "commit": {
-                "author": {
-                    "name": "GitHub Student",
-                    "email": "githubstudent@users.noreply.github.com",
-                    "date": "2014-12-09T16:27:05Z"
-                },
-            }},
+        mock_response = [
             {
                 "sha": "6d7e1fdd7a242711c26a134c5f6a10c99bee46d4",
-                "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2YTEwYzk5YmVlNDZkNA==",
+                "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2Y==",
                 "commit": {
                     "author": {
                         "name": "GitHub Student",
                         "email": "githubstudent@users.noreply.github.com",
                         "date": "2014-12-09T16:27:05Z"
                     },
-                }}
+                }
+            },
+            {
+                "sha": "6d7e1fdd7a242711c26a134c5f6a10c99bee46d4",
+                "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2YTEwYzk==",
+                "commit": {
+                    "author": {
+                        "name": "GitHub Student",
+                        "email": "githubstudent@users.noreply.github.com",
+                        "date": "2014-12-09T16:27:05Z"
+                    },
+                }
+            }
         ]
         mock_resp = _mock_response(content=json.dumps(mock_response))
         mock_get.return_value = mock_resp
@@ -91,16 +108,18 @@ class GithubApi(unittest.TestCase):
     @mock.patch('requests.get')
     def test_get_user_commits_for_repos_failed(self, mock_get):
         """user_commits_for_repo failing"""
-        mock_response = [{
-            "sha": "6d7e1fdd7a242711c26a134c5f6a10c99bee46d4",
-            "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2YTEwYzk5YmVlNDZkNA==",
-            "commit": {
-                "author": {
-                    "name": "GitHub Student",
-                    "email": "githubstudent@users.noreply.github.com",
-                    "date": "2014-12-09T16:27:05Z"
-                },
-            }},
+        mock_response = [
+            {
+                "sha": "6d7e1fdd7a242711c26a134c5f6a10c99bee46d4",
+                "node_id": "MDY6Q29tbWl0Mjg3NjU3OTE6NmQ3ZTFmZGQ3YTI0MjcxMWMyNmExMzRjNWY2YT==",
+                "commit": {
+                    "author": {
+                        "name": "GitHub Student",
+                        "email": "githubstudent@users.noreply.github.com",
+                        "date": "2014-12-09T16:27:05Z"
+                    },
+                }
+            },
         ]
         mock_resp = _mock_response(status=400, content=json.dumps(mock_response))
         mock_get.return_value = mock_resp
@@ -108,26 +127,39 @@ class GithubApi(unittest.TestCase):
         result = get_user_commits_for_repos('test_user', 'repo')
         self.assertEqual(result, 0)
 
-    @mock.patch('HW04ChrisBoffa.prompt_user', return_value='fake_user')
-    @mock.patch('HW04ChrisBoffa.get_user_repos', return_value=None)
+    @mock.patch('hw04_chris_boffa.prompt_user', return_value='fake_user')
+    @mock.patch('hw04_chris_boffa.get_user_repos', return_value=None)
     @patch('builtins.print')
     def test_user_github_activity_no_repos(self, mocked_print):
+        """
+        :param mocked_print:
+        :return:
+        """
         user_github_activity()
-        self.assertEqual(mocked_print.mock_calls, [call('There are no repositories for user: fake_user')])
+        self.assertEqual(mocked_print.mock_calls,
+                         [call('There are no repositories for user: fake_user')])
 
-    @mock.patch('HW04ChrisBoffa.prompt_user', return_value='fake_user')
-    @mock.patch('HW04ChrisBoffa.get_user_repos', return_value=mocked_single_repo)
-    @mock.patch('HW04ChrisBoffa.get_user_commits_for_repos', return_value=12)
+    @mock.patch('hw04_chris_boffa.prompt_user', return_value='fake_user')
+    @mock.patch('hw04_chris_boffa.get_user_repos', return_value=mocked_single_repo)
+    @mock.patch('hw04_chris_boffa.get_user_commits_for_repos', return_value=12)
     @patch('builtins.print')
     def test_user_github_activity_single_repo(self, mocked_print):
+        """
+        :param mocked_print:
+        :return:
+        """
         user_github_activity()
         self.assertEqual(mocked_print.mock_calls, [call('Repo: test_repo Number of commits: 12')])
 
-    @mock.patch('HW04ChrisBoffa.prompt_user', return_value='fake_user')
-    @mock.patch('HW04ChrisBoffa.get_user_repos', return_value=mocked_multiple_repos)
-    @mock.patch('HW04ChrisBoffa.get_user_commits_for_repos', return_value=12)
+    @mock.patch('hw04_chris_boffa.prompt_user', return_value='fake_user')
+    @mock.patch('hw04_chris_boffa.get_user_repos', return_value=mocked_multiple_repos)
+    @mock.patch('hw04_chris_boffa.get_user_commits_for_repos', return_value=12)
     @patch('builtins.print')
     def test_user_github_activity_multiple_repo(self, mocked_print):
+        """
+        :param mocked_print:
+        :return:
+        """
         user_github_activity()
         self.assertEqual(mocked_print.call_count, 2)
         self.assertEqual(mocked_print.mock_calls, [call('Repo: test_repo Number of commits: 12'),

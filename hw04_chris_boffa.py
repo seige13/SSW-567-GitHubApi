@@ -1,13 +1,15 @@
+"""
 # You should write a function that will take as input a GitHub user ID.
 # The output from the function will be a list of the names of the repositories that the user has,
 # along with the number of commits that are in each of the listed repositories.
+"""
 
 import json
 
 import requests
 
-github_repos_api = "https://api.github.com/users/{0}/repos"
-github_repos_commits_api = "https://api.github.com/repos/{0}/{1}/commits"
+GITHUB_REPOS_API = "https://api.github.com/users/{0}/repos"
+GITHUB_REPOS_COMMITS_API = "https://api.github.com/repos/{0}/{1}/commits"
 
 
 def user_github_activity():
@@ -37,30 +39,48 @@ def user_github_activity():
 
 
 def get_user_repos(user: str) -> list:
-    # Gets repos for a given user
-    response = requests.get(github_repos_api.format(user))
+    """
+    Gets repos for a given user
+    :param user:
+    :return:
+    """
+    response = requests.get(GITHUB_REPOS_API.format(user))
 
     if response.status_code == 200:
         return json.loads(response.content)
-    else:
-        return []
+
+    return []
 
 
 def get_user_commits_for_repos(user: str, repo: str) -> int:
-    # Gets number of commits for a given user's repo
-    response = requests.get(github_repos_commits_api.format(user, repo))
+    """
+    Gets number of commits for a given user's repo
+    :param user:
+    :param repo:
+    :return:
+    """
+    response = requests.get(GITHUB_REPOS_COMMITS_API.format(user, repo))
 
     if response.status_code == 200:
         return len(json.loads(response.content))
-    else:
-        return 0
+    return 0
 
 
 def pretty_print_repo_info(repo: int, commits: int) -> None:
+    """
+    Print repo info
+    :param repo:
+    :param commits:
+    :return:
+    """
     return print("Repo: {0} Number of commits: {1}".format(repo, commits))
 
 
 def prompt_user() -> str:
+    """
+    Ask user
+    :return:
+    """
     return input("What's your github username? ")
 
 
